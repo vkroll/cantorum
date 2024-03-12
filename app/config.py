@@ -1,5 +1,6 @@
 class Config:
     # Base configuration settings
+    MY_CHOIR = 'INSERT CHOIRNAME HERE'
     SECRET_KEY = 'your_secret_key_here'
     SQLALCHEMY_DATABASE_URI = 'database_uri_here'
     # ... other base config settings
