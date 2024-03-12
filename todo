@@ -1,0 +1,11 @@
+- login
+- forgot password
+- user types (singer, conductor, voice teacher, repetitor, admin)
+- admin pages
+	- add user
+	- delete user
+	- statistics
+- singer pages
+	- start
+- user profile
+- change userprofile
