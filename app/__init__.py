@@ -1,20 +1,19 @@
 from flask import Flask
-from .config import Config, DevelopmentConfig, TestingConfig, ProductionConfig
+#from .config import Config
+
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
 
 def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_pyfile('config.py', silent=True)
+    db.init_app(app)
+    from . import models    
+    with app.app_context():
+        db.create_all()
 
-    if config_name == 'development':
-        app.config.from_object(DevelopmentConfig)
-    elif config_name == 'testing':
-        app.config.from_object(TestingConfig)
-    elif config_name == 'production':
-        app.config.from_object(ProductionConfig)
-    else:
-        # Default configuration
-        app.config.from_object(Config)
-    
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
