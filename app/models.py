@@ -30,3 +30,43 @@ class LoginAttempts(db.Model):
     login_uuid = db.Column(BINARY(16), db.ForeignKey('login.uuid'), nullable=False)
     last_login = db.Column(db.DateTime)
     failed_login_attempts = db.Column(db.Integer, default=0)
+
+class EventType(db.Model):
+    __tablename__ = 'event_types'
+
+    id = db.Column(db.Integer, primary_key=True)
+    type_name = db.Column(db.String(50), unique=True, nullable=False)
+    description = db.Column(db.String(100))  # Description for the event type
+
+    # Relationship to Event
+    events = db.relationship('Event', backref='event_type', lazy=True)
+
+class Event(db.Model):
+    __tablename__ = 'events'
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    start_time = db.Column(db.DateTime, nullable=False)
+    end_time = db.Column(db.DateTime)
+    room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'), nullable=False)
+    event_type_id = db.Column(db.Integer, db.ForeignKey('event_types.id'), nullable=False)
+
+class Location(db.Model):
+    __tablename__ = 'locations'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)  # Primary name, e.g., 'Marien-Kirche'
+
+    # Relationship to Room
+    rooms = db.relationship('Room', backref='location', lazy=True)
+
+class Room(db.Model):
+    __tablename__ = 'rooms'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)  # Name of the room
+    location_id = db.Column(db.Integer, db.ForeignKey('locations.id'), nullable=False)
+
+    # Relationship to Event
+    events = db.relationship('Event', backref='room', lazy=True)
