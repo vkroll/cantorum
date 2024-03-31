@@ -1,4 +1,4 @@
-from . import db
+from .extensions import db
 import uuid
 from sqlalchemy.dialects.mysql import BINARY
 
@@ -47,8 +47,10 @@ class Event(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
-    start_time = db.Column(db.DateTime, nullable=False)
-    end_time = db.Column(db.DateTime)
+    start_date = db.Column(db.Date, nullable=False)  # Start date of the event
+    end_date = db.Column(db.Date)  # End date of the event (can be null for single-day events)
+    start_time = db.Column(db.Time, nullable=False)  # Start time (considering same start time for all days)
+    end_time = db.Column(db.Time)  # End time (considering same end time for all days)
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'), nullable=False)
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_types.id'), nullable=False)
 
