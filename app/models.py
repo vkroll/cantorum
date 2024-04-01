@@ -1,33 +1,50 @@
 from .extensions import db
 import uuid
 from sqlalchemy.dialects.mysql import BINARY
-
+from werkzeug.security import generate_password_hash, check_password_hash
 # Helper function to generate UUID
 def generate_uuid():
     return uuid.uuid4().bytes
 
 # Models
+login_roles = db.Table('login_roles',
+    db.Column('login_uuid', db.String(36), db.ForeignKey('login.uuid'), primary_key=True),
+    db.Column('role_id', db.Integer, db.ForeignKey('roles.id'), primary_key=True)
+)
 class Login(db.Model):
     __tablename__ = 'login'
-    uuid = db.Column(BINARY(16), primary_key=True, default=generate_uuid)
+    uuid = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
     # Relationships
     person = db.relationship('Person', backref='login', lazy=True)
     loginattempts = db.relationship('LoginAttempts', backref='login', lazy=True)
+    roles = db.relationship('Role', secondary=login_roles, lazy='subquery',
+                            backref=db.backref('logins', lazy=True))
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
 
 class Person(db.Model):
     __tablename__ = 'person'
     id = db.Column(db.Integer, primary_key=True)
-    login_uuid = db.Column(BINARY(16), db.ForeignKey('login.uuid'), nullable=False)
+    login_uuid = db.Column(db.String(36), db.ForeignKey('login.uuid'))
     vorname = db.Column(db.String(50), nullable=False)
     nachname = db.Column(db.String(50), nullable=False)
 
 class LoginAttempts(db.Model):
     __tablename__ = 'loginattempts'
     id = db.Column(db.Integer, primary_key=True)
-    login_uuid = db.Column(BINARY(16), db.ForeignKey('login.uuid'), nullable=False)
+    login_uuid = db.Column(db.String(36), db.ForeignKey('login.uuid'))
     last_login = db.Column(db.DateTime)
     failed_login_attempts = db.Column(db.Integer, default=0)
 

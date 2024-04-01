@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-grey">
     <div class="container-fluid">
-      <h1>{{ config['MY_CHOIR'] }}</h1>
+      <h1>Ölbergchor</h1>
       <button class="navbar-toggler" 
         type="button" 
         data-bs-toggle="collapse" 
@@ -18,6 +18,10 @@
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Funktionen
             </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="{{ url_for('events.future_events') }}">Termine</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">...</a></li>
             </ul>
         </li>
 
