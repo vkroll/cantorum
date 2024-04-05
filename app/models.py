@@ -2,6 +2,10 @@ from .extensions import db
 import uuid
 from sqlalchemy.dialects.mysql import BINARY
 from werkzeug.security import generate_password_hash, check_password_hash
+import enum
+from sqlalchemy import Enum, event
+
+
 # Helper function to generate UUID
 def generate_uuid():
     return uuid.uuid4().bytes
@@ -34,12 +38,60 @@ class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True)
 
+def insert_initial_roles(*args, **kwargs):
+    db.session.add_all([
+        Role(name='admin'),
+        Role(name='singer'),
+        Role(name='viewer'),
+        Role(name='conductor'),
+        Role(name='choir board'),
+        Role(name='assistent'),
+        Role(name='correpetitor'),
+        Role(name='voice trainer')
+        # Add other roles as necessary
+    ])
+    db.session.commit()
+
 class Person(db.Model):
     __tablename__ = 'person'
     id = db.Column(db.Integer, primary_key=True)
     login_uuid = db.Column(db.String(36), db.ForeignKey('login.uuid'))
     vorname = db.Column(db.String(50), nullable=False)
     nachname = db.Column(db.String(50), nullable=False)
+
+class State(enum.Enum):
+    MEMBER = 'member'
+    GUEST = 'guest'
+    VACATION = 'vacation'
+
+class Voice(db.Model):
+    __tablename__= 'voice'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), unique=True)
+    description = db.Column(db.String(128))
+
+def insert_initial_voices(*args, **kwargs):
+    db.session.add_all([
+        Voice(name = "S1", description = "Sopran 1"),
+        Voice(name = "S2", description = "Sopran 2"),
+        Voice(name = "A1", description = "Alt 1"),
+        Voice(name = "A2", description = "Alt 2"),
+        Voice(name = "T1", description = "Tenor 1"),
+        Voice(name = "T2", description = "Tenor 2"),
+        Voice(name = "B1", description = "Bass 1"),
+        Voice(name = "B2", description = "Bass 2")
+        # Add other roles as necessary
+    ])
+    db.session.commit()   
+
+class Singer(db.Model):
+    __tablename__ = 'singer'
+    id = db.Column(db.Integer, primary_key=True)
+    person_id = db.Column(db.Integer, db.ForeignKey('person.id'))
+    voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'))
+    state = db.Column(Enum(State),default=State.MEMBER)
+
+
 
 class LoginAttempts(db.Model):
     __tablename__ = 'loginattempts'
@@ -89,3 +141,8 @@ class Room(db.Model):
 
     # Relationship to Event
     events = db.relationship('Event', backref='room', lazy=True)
+
+
+# Listening to the 'after_create' event
+event.listen(Role.__table__, 'after_create', insert_initial_roles)
+event.listen(Voice.__table__, 'after_create', insert_initial_voices)
