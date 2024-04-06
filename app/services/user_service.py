@@ -1,7 +1,7 @@
 # app/services/user_service.py
 
 from ..extensions import db
-from ..models import Login,Person
+from ..models import Login,Person, Singer
 from sqlalchemy.exc import IntegrityError
 from sys import stderr
 
@@ -24,3 +24,20 @@ def add_person_data(email, vorname, nachname):
     db.session.commit()
     
     return person
+
+def add_singer(vorname, nachname, username, email, voice_id):
+    try:
+        new_login = Login(username=username, email=email)
+        new_login.set_password('defaultpassword')
+        new_person = Person(login=new_login, vorname=vorname, nachname=nachname)
+        new_singer = Singer(person=new_person, voice_id=voice_id)
+        db.session.add(new_login)
+        db.session.add(new_person)
+        db.session.add(new_singer)
+        db.session.commit()    
+        return new_singer
+    except IntegrityError:
+        db.session.rollback()
+        current_app.logger.error('Error in adding a new singer')
+        return None
+    

@@ -56,6 +56,7 @@ class Person(db.Model):
     __tablename__ = 'person'
     id = db.Column(db.Integer, primary_key=True)
     login_uuid = db.Column(db.String(36), db.ForeignKey('login.uuid'))
+    singer = db.relationship('Singer', backref='person', lazy=True)
     vorname = db.Column(db.String(50), nullable=False)
     nachname = db.Column(db.String(50), nullable=False)
 
