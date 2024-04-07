@@ -1,21 +1,47 @@
 <!-- auth/login.html-->
 {% extends 'base.html' %}
-
 {% block content %}
-    <h2>Login</h2>
-    <!-- errors-->
-    <span style="color: red;">{{ error }}</span>
-    <!-- end errors-->
-    <form method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
+
+<section class="gradient-form">
+    <div class="container py-5">
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-xl-10">
+          <div class="card rounded-3 text-black">
+            <div class="row g-0">
+              <div class="col-lg-6">
+                <div class="card-body p-md-5 mx-md-4">
+  
+                  <form method="post">
+                    <p>Login</p>
+                    {{ form.hidden_tag() }}
+  
+                    <div class="form-outline mb-4">
+                        {{ form.email.label }}<br>
+                        {{ form.email(size=32) }}
+                    </div>
+  
+                    <div class="form-outline mb-4">
+                        {{ form.password.label }}<br>
+                        {{ form.password(size=32) }}
+                    </div>
+  
+                    <div class="text-center pt-1 mb-5 pb-1">
+                        {{ form.submit() }}
+                    </div>
+                  </form>
+  
+                </div>
+              </div>
+            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                    <img src="{{ url_for('static', filename='images/login.jpg') }} ">
+                </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 {% endblock %}
