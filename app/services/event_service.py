@@ -1,7 +1,8 @@
 # app/services/event_service.py
 from ..extensions import db
 from ..models import Event
-from datetime import date
+from datetime import date, datetime
+import calendar
 
 def create_event(title, description, 
                  start_date, end_date,
@@ -26,3 +27,19 @@ def get_future_events():
         (Event.start_date >= today) 
     ).all()
     return future_events
+
+def get_events(year, month):
+    # Create an instance of TextCalendar
+    cal = calendar.Calendar(firstweekday=0)  # 0 = Monday, 1 = Tuesday, ...
+    month_days = cal.monthdayscalendar(year, month) 
+    
+    events = Event.query.filter(
+        db.extract('year', Event.start_date) == year,
+        db.extract('month', Event.start_date) == month
+    ).all()
+     # Process events to match with days
+    events_by_day = {day: [] for week in month_days for day in week if day != 0}
+    for event in events:
+        events_by_day[event.start_date.day].append(event)
+
+    return events_by_day

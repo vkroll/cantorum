@@ -1,0 +1,39 @@
+<!-- calendar.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Events Calendar - {{ month }}/{{ year }}</h2>
+<table>
+    <!-- Table Headers -->
+    <tr>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+        <th>Friday</th>
+        <th>Saturday</th>
+        <th>Sunday</th>
+    </tr>
+
+    <!-- Days -->
+    {% for week in month_days %}
+    <tr>
+        {% for day in week %}
+        <td>
+            {% if day %}
+            {{ day }}
+            <!-- Display events for the day -->
+            {% if events_by_day[day] %}
+            <ul>
+                {% for event in events_by_day[day] %}
+                <li>{{ event.title }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endif %}
+        </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
