@@ -3,7 +3,7 @@
 
 {% block content %}
 <h2>Events Calendar - {{ month }}/{{ year }}</h2>
-<table>
+<table class="table">
     <!-- Table Headers -->
     <tr>
         <th>Monday</th>
@@ -26,7 +26,7 @@
             {% if events_by_day[day] %}
             <ul>
                 {% for event in events_by_day[day] %}
-                <li>{{ event.title }}</li>
+                {{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M')}} <br><b>{{ event.title }}</b>
                 {% endfor %}
             </ul>
             {% endif %}
