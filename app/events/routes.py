@@ -5,6 +5,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from . import events
 from ..services.event_service import create_event, get_future_events, get_events  # Importing your event creation service
+from flask_login import login_required
 
 @events.route('/create_event', methods=['POST'])
 def create_event_route():
@@ -14,11 +15,13 @@ def create_event_route():
 
 
 @events.route('/future_events')
+@login_required
 def future_events():
     events = get_future_events()
     return render_template('future_events.html', events=events)
 
 @events.route('/actual_calendar')
+@login_required
 def show_actual_calendar():
     today = datetime.now()
     year = today.year
@@ -26,6 +29,7 @@ def show_actual_calendar():
     return show_calendar(year,month)
 
 @events.route('/calendar/<int:year>/<int:month>')
+@login_required
 def show_calendar(year, month):
     # Create an instance of TextCalendar
     cal = calendar.Calendar(firstweekday=0)  # 0 = Monday, 1 = Tuesday, ...
@@ -33,8 +37,6 @@ def show_calendar(year, month):
     m = datetime(year, month, 1)
     n = m + relativedelta(months=1)
     p = m - relativedelta(months=1)
-
-    
 
     events_by_day = get_events(year, month)
 
