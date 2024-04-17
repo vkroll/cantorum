@@ -38,6 +38,5 @@ def add_singer(vorname, nachname, username, email, voice_id):
         return new_singer
     except IntegrityError:
         db.session.rollback()
-        current_app.logger.error('Error in adding a new singer')
         return None
     
