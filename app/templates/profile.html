@@ -1,0 +1,11 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>User Profile</h1>
+    <p>Vorname: {{ person.vorname }}</p>
+    <p>Nachname: {{ person.nachname }}</p>
+    <p>EMail: {{ current_user.email }}</p>
+    <p>Stimme: {{person.singer.voice.name}}</p>
+    <!-- Add other user data fields as needed -->
+{% endblock %}

@@ -4,6 +4,7 @@ from sqlalchemy.dialects.mysql import BINARY
 from werkzeug.security import generate_password_hash, check_password_hash
 import enum
 from sqlalchemy import Enum, event
+from flask_login import UserMixin
 
 
 # Helper function to generate UUID
@@ -15,14 +16,14 @@ login_roles = db.Table('login_roles',
     db.Column('login_uuid', db.String(36), db.ForeignKey('login.uuid'), primary_key=True),
     db.Column('role_id', db.Integer, db.ForeignKey('roles.id'), primary_key=True)
 )
-class Login(db.Model):
+class Login(db.Model, UserMixin):
     __tablename__ = 'login'
     uuid = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
     # Relationships
-    person = db.relationship('Person', backref='login', lazy=True)
+    person = db.relationship('Person', backref='login', lazy=True, uselist=False)
     loginattempts = db.relationship('LoginAttempts', backref='login', lazy=True)
     roles = db.relationship('Role', secondary=login_roles, lazy='subquery',
                             backref=db.backref('logins', lazy=True))
@@ -31,6 +32,9 @@ class Login(db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+    
+    def get_id(self):
+        return self.uuid
 
 
 class Role(db.Model):
@@ -56,7 +60,7 @@ class Person(db.Model):
     __tablename__ = 'person'
     id = db.Column(db.Integer, primary_key=True)
     login_uuid = db.Column(db.String(36), db.ForeignKey('login.uuid'))
-    singer = db.relationship('Singer', backref='person', lazy=True)
+    singer = db.relationship('Singer', backref='person', lazy=True, uselist=False)
     vorname = db.Column(db.String(50), nullable=False)
     nachname = db.Column(db.String(50), nullable=False)
 
@@ -91,7 +95,7 @@ class Singer(db.Model):
     person_id = db.Column(db.Integer, db.ForeignKey('person.id'))
     voice_id = db.Column(db.Integer, db.ForeignKey('voice.id'))
     state = db.Column(Enum(State),default=State.MEMBER)
-
+    voice = db.relationship('Voice', backref='singers') 
 
 
 class LoginAttempts(db.Model):
@@ -107,6 +111,7 @@ class EventType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     type_name = db.Column(db.String(50), unique=True, nullable=False)
     description = db.Column(db.String(100))  # Description for the event type
+    default_attendance = db.Column(db.Boolean, nullable=False, default=True)  # Default attendance for this event type
 
     # Relationship to Event
     events = db.relationship('Event', backref='event_type', lazy=True)
@@ -123,6 +128,13 @@ class Event(db.Model):
     end_time = db.Column(db.Time)  # End time (considering same end time for all days)
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'), nullable=False)
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_types.id'), nullable=False)
+    attendees = db.relationship('Singer', secondary='event_attendance', backref='attended_events', lazy='subquery')
+
+event_attendance = db.Table('event_attendance',
+    db.Column('event_id', db.Integer, db.ForeignKey('events.id'), primary_key=True),
+    db.Column('singer_id', db.Integer, db.ForeignKey('singer.id'), primary_key=True),
+    db.Column('attending', db.Boolean, nullable=False, default=True)
+)
 
 class Location(db.Model):
     __tablename__ = 'locations'

@@ -19,11 +19,16 @@
             Funktionen
             </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Login</a></li>
+              {% if current_user.is_authenticated %}
+              <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout {{ current_user.username }}</a></li>
+              <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{{ url_for('events.future_events') }}">Termine</a></li>
               <li><a class="dropdown-item" href="{{ url_for('events.show_actual_calendar') }}">Kalendar</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="#">...</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">Profil</a></li>
+              {% else %}
+              <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Login </a></li>
+              {% endif %}
             </ul>
         </li>
 
