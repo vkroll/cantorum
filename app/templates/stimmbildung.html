@@ -14,9 +14,19 @@ Stimmbildungen
         {% endfor %}
     </ul>
     {% if current_user.person.singer.id in attendee_ids %}
-        <a href="#" class="removeUserLink" data-event-id="{{ event.id }}">Remove Me</a>
+        <span id="removeme-{{event.id}}">
+            <a href="#" class="removeUserLink" data-event-id="{{ event.id }}">Remove Me</a>
+        </span>
+        <span id="addme-{{event.id}}" style="display: none;">
+            <a href="#" class="addUserLink" data-event-id="{{ event.id }}" id="addUserLink.{{event.id}}">Add Me</a>
+        </span>
     {% else %}
-        <a href="#" class="addUserLink" data-event-id="{{ event.id }}">Add Me</a>
+        <span id="addme-{{event.id}}">
+            <a href="#" class="addUserLink" data-event-id="{{ event.id }}" id="addUserLink.{{event.id}}">Add Me</a>
+        </span>
+        <span id="removeme-{{event.id}}" style="display: none;">
+            <a href="#" class="removeUserLink" data-event-id="{{ event.id }}">Remove Me</a>
+        </span>
     {% endif %}
 {% endfor %}
 
@@ -41,6 +51,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     var countElement = document.getElementById('count-' + eventId);
                     var currentCount = parseInt(countElement.textContent.match(/\d+/)[0]);
                     countElement.textContent = 'Count of attendees: ' + (currentCount + 1);
+                    tohide = document.getElementById("addme-"+eventId);
+                    toshow = document.getElementById("removeme-"+eventId);
+                    if (tohide) {
+                        tohide.style.display = "none"; // Hide the element
+                        toshow.style.display = "";
+                    }
                 } else {
                     // Handle error
                     console.error('Error adding user to event:', xhr.responseText);

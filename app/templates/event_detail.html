@@ -1,0 +1,30 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card" style="width: 100%;">
+        <div class="card-body">
+            <h1 class="card-title">{{ event.title }} {{event.start_date.strftime('%d.%m.%Y')}} </h1>
+            <h2 class="card-subtitle">{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M')}}
+            {{ event.room.location.name }} {{ event.room.name }}</h2>
+            <p class="card-text">
+            <ul class="list-group">
+                {% for sub_event in sub_events %}
+                    <li class="list-group-item">{{ sub_event.title }} - {{ sub_event.start_time.strftime('%H:%M') }} - {{ sub_event.end_time.strftime('%H:%M')}}
+
+                        <ul>
+                            {% for attendee in sub_event.attendees %}
+                                <li>{{ attendee.person.vorname }} {{ attendee.person.nachname }}</li>
+                                <!-- Add other attendee details as needed -->
+                            {% endfor %}
+                        </ul>
+
+
+                    </li>
+                    <!-- Add other event details as needed -->
+                {% endfor %}
+            </ul>
+            </p>
+        </div>
+    </div>
+{% endblock %}

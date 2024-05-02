@@ -1,0 +1,40 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-grey">
+    <div class="container-fluid">
+      <h1>Ölbergchor</h1>
+      <button class="navbar-toggler" 
+        type="button" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#navbarSupportedContent" 
+        aria-controls="navbarSupportedContent" 
+        aria-expanded="false" 
+        aria-label="Toggle navigation"
+        >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav"> <!-- me-auto mb-0 mb-lg-0" -->
+          
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Funktionen
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% if current_user.is_authenticated %}
+              <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">Logout {{ current_user.username }}</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{{ url_for('events.future_events') }}">Termine</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('events.show_actual_calendar') }}">Kalendar</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('events.stimmbildung') }}">Stimmbildung</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">Profil</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('user.userlist') }}">Liste</a></li>
+              {% else %}
+              <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Login </a></li>
+              {% endif %}
+            </ul>
+        </li>
+
+          </ul>
+      </div>
+    </div>
+    </nav>

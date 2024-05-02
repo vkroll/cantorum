@@ -13,28 +13,26 @@
   <body>
     <!-- here navigation -->
         {% include "nav.html" %}
-        
+        <div style="height: 5em;"></div> 
         <div class="container-fluid">
             {% for message in get_flashed_messages() %}
               <div class="alert alert-warning">
               <button type="button" class="close" data-dismiss="alert">&times;</button>
             {{ message }}
+              </div>
+          {% endfor %}
             
-          </div>
-        {% endfor %}
-
         {% block content %}{% endblock %}
       </div>
 
+
     <script src="{{ url_for('static', filename='js/bootstrap-5-0-1.bundle.min.js') }}"></script>
-    <footer class="text-center text-lg-start bg-body-tertiary text-muted footer">
-      <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
-    {% if current_user.is_authenticated %}
-    <small>
-      {{ current_user.person.vorname }} {{ current_user.person.nachname }}
-    </small>
-    {% endif %}
+
+    <footer class="footer mt-auto py-3 bg-grey">
+      <div class="container">
+        <span class="text-muted">{{ current_user.person.vorname }} {{ current_user.person.nachname }}</span>
       </div>
     </footer>
+
   </body>
 </html>
