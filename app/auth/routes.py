@@ -51,8 +51,9 @@ def login():
 
     return render_template('auth/login.html', title='Login', form=form)
 
-#@auth.route('/forgot_password')
-#def forgot_password():
+@auth.route('/forgot_password')
+def forgot_password():
+    return
 
 #@auth.route('insert_password')
 #def insert_password():
