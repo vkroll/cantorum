@@ -4,9 +4,9 @@ import calendar
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from . import events
-from ..services.event_service import create_event, get_future_events, get_events , get_stimmbildungen_full # Importing your event creation service
+from ..services.event_service import create_event, get_future_events, get_events , get_stimmbildungen_full , get_event_by_id
 from flask_login import login_required, current_user
-from ..models import Person, Singer, event_attendance
+from ..models import Person, Singer, event_attendance, Voice
 from ..extensions import db
 from flask import jsonify, request
 
@@ -17,6 +17,13 @@ def create_event_route():
     # and call your event creation service
     return render_template('index.html')
 
+
+@events.route('/detail/<int:id>')
+def detail(id):
+    event = get_event_by_id(id)
+    sub_events = event.sub_events
+
+    return render_template("event_detail.html", event=event,sub_events=sub_events )
 
 @events.route('/future_events')
 @login_required

@@ -24,6 +24,10 @@ def create_event(title, description,
     db.session.add(new_event)
     db.session.commit()
     return new_event
+def get_event_by_id(id):
+    # Assuming you have a method to query the database for events by their ID
+    event = Event.query.filter_by(id=id).first()
+    return event
 
 def get_future_events():
     today = date.today()

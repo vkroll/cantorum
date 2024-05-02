@@ -130,6 +130,8 @@ class Event(db.Model):
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_types.id'), nullable=False)
     main_event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     attendees = db.relationship('Singer', secondary='event_attendance', backref='attended_events', lazy='subquery')
+    sub_events = db.relationship('Event', backref=db.backref('main_event', remote_side=[id]))
+ 
 
 event_attendance = db.Table('event_attendance',
     db.Column('event_id', db.Integer, db.ForeignKey('events.id'), primary_key=True),
