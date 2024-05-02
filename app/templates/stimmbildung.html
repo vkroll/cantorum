@@ -1,0 +1,58 @@
+<!-- stimmbildungen.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+Stimmbildungen
+{% for event, (count_of_attendees, attendees_list) in stimmbildung.items() %}
+    <h2>{{ event.title }} {{ event.start_date.strftime('%d.%m.%Y') }} {{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M')}}</h2>
+    <p id="count-{{ event.id }}">Count of attendees: {{ count_of_attendees }}</p>
+    <ul>
+        {% set attendee_ids = [] %}
+        {% for attendee in attendees_list %}
+            {% set _ = attendee_ids.append(attendee.id) %}
+            <li>{{ attendee.vorname }} {{ attendee.nachname }}</li>
+        {% endfor %}
+    </ul>
+    {% if current_user.person.singer.id in attendee_ids %}
+        <a href="#" class="removeUserLink" data-event-id="{{ event.id }}">Remove Me</a>
+    {% else %}
+        <a href="#" class="addUserLink" data-event-id="{{ event.id }}">Add Me</a>
+    {% endif %}
+{% endfor %}
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    var addUserLinks = document.getElementsByClassName('addUserLink');
+    Array.from(addUserLinks).forEach(function(addUserLink) {
+        addUserLink.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent the default action of the link
+
+            var eventId = addUserLink.dataset.eventId; // Get the event ID from the data attribute
+
+            // Perform an AJAX request to submit the form data
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/events/adduser_to_event', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Handle successful response
+                    console.log('User added to event successfully.');
+                    var countElement = document.getElementById('count-' + eventId);
+                    var currentCount = parseInt(countElement.textContent.match(/\d+/)[0]);
+                    countElement.textContent = 'Count of attendees: ' + (currentCount + 1);
+                } else {
+                    // Handle error
+                    console.error('Error adding user to event:', xhr.responseText);
+                }
+            };
+            xhr.onerror = function() {
+                // Handle network error
+                console.error('Network error occurred while adding user to event.');
+            };
+            xhr.send('event_id=' + eventId);
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -24,8 +24,10 @@
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{{ url_for('events.future_events') }}">Termine</a></li>
               <li><a class="dropdown-item" href="{{ url_for('events.show_actual_calendar') }}">Kalendar</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('events.stimmbildung') }}">Stimmbildung</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="{{ url_for('user.profile') }}">Profil</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('user.userlist') }}">Liste</a></li>
               {% else %}
               <li><a class="dropdown-item" href="{{ url_for('auth.login') }}">Login </a></li>
               {% endif %}

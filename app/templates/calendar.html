@@ -28,7 +28,9 @@
                 {% if events_by_day[day] %}
                 <ul>
                     {% for event in events_by_day[day] %}
-                    {{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M')}} <br><b>{{ event.title }}</b>
+                    {% if event.event_type_id in [1,2,3,4] %}
+                    {{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M')}} <br><b>{{ event.title }}<br></b>
+                    {% endif %}
                     {% endfor %}
                 </ul>
                 {% endif %}

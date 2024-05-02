@@ -2,10 +2,20 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>User Profile</h1>
-    <p>Vorname: {{ person.vorname }}</p>
-    <p>Nachname: {{ person.nachname }}</p>
-    <p>EMail: {{ current_user.email }}</p>
-    <p>Stimme: {{person.singer.voice.name}}</p>
+            <h1>User Profile</h1>
+<table class="table">
+    <tr>
+        <td>
+            <img src="/static/images/users/{{person.vorname}}__{{person.nachname}}.jpg">
+        </td>
+        <td>
+            <p>Vorname: {{ person.vorname }}</p>
+            <p>Nachname: {{ person.nachname }}</p>
+            <p>EMail: {{ current_user.email }}</p>
+            <p>Stimme: {{person.singer.voice.name}}</p>
+
+        </td>
+    </tr>
+</table>
     <!-- Add other user data fields as needed -->
 {% endblock %}

@@ -27,10 +27,14 @@
       </div>
 
     <script src="{{ url_for('static', filename='js/bootstrap-5-0-1.bundle.min.js') }}"></script>
+    <footer class="text-center text-lg-start bg-body-tertiary text-muted footer">
+      <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);">
     {% if current_user.is_authenticated %}
     <small>
       {{ current_user.person.vorname }} {{ current_user.person.nachname }}
     </small>
     {% endif %}
+      </div>
+    </footer>
   </body>
 </html>
