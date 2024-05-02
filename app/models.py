@@ -128,6 +128,7 @@ class Event(db.Model):
     end_time = db.Column(db.Time)  # End time (considering same end time for all days)
     room_id = db.Column(db.Integer, db.ForeignKey('rooms.id'), nullable=False)
     event_type_id = db.Column(db.Integer, db.ForeignKey('event_types.id'), nullable=False)
+    main_event_id = db.Column(db.Integer, db.ForeignKey('events.id'))
     attendees = db.relationship('Singer', secondary='event_attendance', backref='attended_events', lazy='subquery')
 
 event_attendance = db.Table('event_attendance',
