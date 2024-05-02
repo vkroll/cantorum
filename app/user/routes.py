@@ -14,3 +14,8 @@ def profile():
     # Get the associated person data
     person_data = login_data.person
     return render_template('profile.html', person=person_data)
+
+@user.route('list')
+def userlist():
+    persons = Person.query.all()
+    return render_template('userlist.html', persons=persons)

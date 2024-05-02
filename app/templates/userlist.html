@@ -1,0 +1,20 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Sänger und Sängerinnen des Ölbergchores</h1>>
+<table class="table">
+{% for person in persons %}
+    <tr>
+        <td>
+            <img src="/static/images/users/{{person.vorname}}__{{person.nachname}}.jpg">
+        </td>
+        <td>
+            <p> {{ person.vorname }}  {{ person.nachname }} ( {{person.singer.voice.name}} )</p>
+
+        </td>
+    </tr>
+{% endfor %}
+</table>
+    <!-- Add other user data fields as needed -->
+{% endblock %}
