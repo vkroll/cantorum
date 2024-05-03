@@ -35,7 +35,9 @@ class Login(db.Model, UserMixin):
     
     def get_id(self):
         return self.uuid
-
+    
+    def has_any_role(self, *roles):
+        return any(role.name in roles for role in self.roles)
 
 class Role(db.Model):
     __tablename__ = 'roles'

@@ -9,6 +9,7 @@ from flask_login import login_required, current_user
 from ..models import Person, Singer, event_attendance, Voice
 from ..extensions import db
 from flask import jsonify, request
+from ..decorators import role_required
 
 
 @events.route('/create_event', methods=['POST'])
@@ -19,6 +20,7 @@ def create_event_route():
 
 
 @events.route('/detail/<int:id>')
+@role_required('singer')
 def detail(id):
     event = get_event_by_id(id)
     sub_events = event.sub_events
