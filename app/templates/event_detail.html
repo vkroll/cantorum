@@ -14,7 +14,7 @@
 
                         <ul>
                             {% for attendee in sub_event.attendees %}
-                                <li>{{ attendee.person.vorname }} {{ attendee.person.nachname }}</li>
+                                <li class="list-group-item small">{{ attendee.person.vorname }} {{ attendee.person.nachname }}</li>
                                 <!-- Add other attendee details as needed -->
                             {% endfor %}
                         </ul>
