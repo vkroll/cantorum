@@ -4,7 +4,7 @@ import calendar
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from . import events
-from ..services.event_service import create_event, get_future_events, get_events , get_stimmbildungen_full , get_event_by_id, add_attendee
+from ..services.event_service import create_event, get_future_events, get_events , get_stimmbildungen_full , get_event_by_id, add_attendee, remove_attendee
 from flask_login import login_required, current_user
 from ..models import Person, Singer, event_attendance, Voice
 from ..extensions import db
@@ -81,23 +81,34 @@ def adduser_to_event():
         return jsonify({'success': False, 'error': str(e)}), 500
 
    
-@events.route('/add_attendees', methods=['POST'])
+@events.route('/add_attendee', methods=['POST'])
 @login_required
 @role_required('admin', 'conductor', 'choir board')
-def add_attendees():
-    if request.method == 'POST':
-        # Get the JSON data from the request
-        attendee = request.json
-        # Process the data as needed
-        event_id = attendee.get('event_id')
-        singer_id = attendee.get('singer_id')
-        # Example response
-        add_attendee(event_id, singer_id )
-        response = {'message': 'Attendee added successfully', 'event_id': event_id, 'singer_id': singer_id}
-        return jsonify(response)
-    else:
-        return jsonify({'error': 'Method not allowed'}), 405
+def add_attendee_():
+    # Get the JSON data from the request
+    attendee = request.json
+    event_id = attendee.get('event_id')
+    singer_id = attendee.get('singer_id')
+
+    add_attendee(event_id, singer_id )
+    response = {'message': 'Attendee added successfully', 'event_id': event_id, 'singer_id': singer_id}
+    return jsonify(response)
     
+
+@events.route('/remove_attendee', methods=['POST'])
+@login_required
+@role_required('admin', 'conductor', 'choir board')
+def remove_attendee_():
+    data = request.json
+    event_id = data.get('event_id')
+    singer_id = data.get('singer_id')
+    r = remove_attendee(event_id, singer_id)
+
+
+    return jsonify({'success': r})
+
+
+
 @events.route('/calendar/<int:year>/<int:month>')
 @login_required
 def show_calendar(year, month):

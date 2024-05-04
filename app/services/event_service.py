@@ -106,3 +106,26 @@ def add_attendee(event_id, singer_id):
     except Exception as e:
         db.session.rollback()
         return False
+    
+def remove_attendee(event_id, singer_id):
+    try:
+        # Query the event and the singer
+        event = Event.query.get(event_id)
+        singer = Singer.query.get(singer_id)
+
+        # Check if the event and singer exist
+        if not event or not singer:
+            return False  # Unable to remove attendee, event or singer not found
+
+        # Remove the singer from the event's attendees list
+        if singer in event.attendees:
+            event.attendees.remove(singer)
+            db.session.commit()
+            return True  # Attendee removed successfully
+        else:
+            return False  # Attendee not found in the event's attendees list
+
+    except Exception as e:
+        # Handle any exceptions, such as database errors
+        print(f"Error removing attendee: {e}")
+        return False  # Unable to remove attendee due to an error

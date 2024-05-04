@@ -41,14 +41,15 @@
                     // Prevent the default action of the button (e.g., form submission)
                     event.preventDefault();
                     // Toggle button display and color immediately
+                    var path = '';
                     if (button.classList.contains('btn-primary')) {
-                        // Button was not added, change to remove button
+                        path = '/events/add_attendee';
                         button.textContent = 'Remove';
-                        toggleButtonClass(button)
+                        toggleButtonClass(button);
                     } else {
-                        // Button was already added, change to add button
+                        path = '/events/remove_attendee';
                         button.textContent = 'Add';
-                        toggleButtonClass(button)
+                        toggleButtonClass(button);
                     }
  
                     var singerId = this.dataset.singerId;
@@ -56,9 +57,8 @@
                         event_id: {{ event.id}},
                         singer_id: singerId
                     };
-                    // Execute your function here
                     console.log('Button clicked!', singerId);
-                    sendJSONRequest('/events/add_attendees', attendee, function(error, response) {
+                    sendJSONRequest(path, attendee, function(error, response) {
                         if (error) {
                             console.error('Error:', error);
                         } else {
