@@ -10,16 +10,20 @@
             <p class="card-text">
             <ul class="list-group">
                 {% for sub_event in sub_events %}
-                    <li class="list-group-item">{{ sub_event.title }} - {{ sub_event.start_time.strftime('%H:%M') }} - {{ sub_event.end_time.strftime('%H:%M')}}
-
+                    <li class="list-group-item">{{ sub_event.title }} 
+                        - {{ sub_event.start_time.strftime('%H:%M') }} 
+                        - {{ sub_event.end_time.strftime('%H:%M')}}
+                        {% if current_user.has_any_role('admin', 'conductor', 'choir board') %}
+                        <a href="{{ url_for('events.edit_attendees', id=sub_event.id) }}">bearbeiten</a> {% endif %}
                         <ul>
                             {% for attendee in sub_event.attendees %}
-                                <li class="list-group-item small">{{ attendee.person.vorname }} {{ attendee.person.nachname }}</li>
+                                <li class="list-group-item small">
+                                    {{ attendee.person.vorname }} 
+                                    {{ attendee.person.nachname }}
+                                </li>
                                 <!-- Add other attendee details as needed -->
                             {% endfor %}
                         </ul>
-
-
                     </li>
                     <!-- Add other event details as needed -->
                 {% endfor %}

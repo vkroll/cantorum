@@ -92,3 +92,17 @@ def get_events(year, month):
         events_by_day[event.start_date.day].append(event)
 
     return events_by_day
+
+def add_attendee(event_id, singer_id):
+    new_attendance = event_attendance.insert().values(
+        event_id=event_id,
+        singer_id=singer_id,
+        attending=True  # Assuming the user is attending by default
+    )
+    try:
+        db.session.execute(new_attendance)
+        db.session.commit()
+        return True
+    except Exception as e:
+        db.session.rollback()
+        return False

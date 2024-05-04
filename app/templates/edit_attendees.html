@@ -1,0 +1,95 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card" style="width: 100%;">
+        <div class="card-body">
+            <h1 class="card-title">{{ event.title }} {{event.start_date.strftime('%d.%m.%Y')}} </h1>
+            <h2 class="card-subtitle">{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M')}}
+            {{ event.room.location.name }} {{ event.room.name }}</h2>
+            <p class="card-text">
+            <ul class="list-group">
+                    <li class="list-group-item">{{ event.title }} 
+                        - {{ event.start_time.strftime('%H:%M') }} 
+                        - {{ event.end_time.strftime('%H:%M')}}
+                    </li>
+                    <ul>
+                        {% for s in singers %}
+                            <li class="list-group-item">
+                                <button class="btn {% if s in event.attendees %}btn-danger{% else %}btn-primary{% endif %} add-singer" data-singer-id="{{ s.id }}">
+                                    {% if s in event.attendees %}
+                                        Remove
+                                    {% else %}
+                                        Add
+                                    {% endif %}
+                                </button> {{ s.person.vorname }} {{ s.person.nachname }} ({{ s.voice.name }}) 
+                            </li>
+                        {% endfor %}
+                    </ul>
+            </ul>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', function() {
+        // Add event listener to all buttons with the class 'myButton'
+        var buttons = document.querySelectorAll('.add-singer');
+            buttons.forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    // Prevent the default action of the button (e.g., form submission)
+                    event.preventDefault();
+                    // Toggle button display and color immediately
+                    if (button.classList.contains('btn-primary')) {
+                        // Button was not added, change to remove button
+                        button.textContent = 'Remove';
+                        toggleButtonClass(button)
+                    } else {
+                        // Button was already added, change to add button
+                        button.textContent = 'Add';
+                        toggleButtonClass(button)
+                    }
+ 
+                    var singerId = this.dataset.singerId;
+                    var attendee = {
+                        event_id: {{ event.id}},
+                        singer_id: singerId
+                    };
+                    // Execute your function here
+                    console.log('Button clicked!', singerId);
+                    sendJSONRequest('/events/add_attendees', attendee, function(error, response) {
+                        if (error) {
+                            console.error('Error:', error);
+                        } else {
+                            console.log('Response:', response);
+                        }
+                    });
+                });
+            });
+        });
+        function toggleButtonClass(button) {
+            button.classList.toggle('btn-primary');
+            button.classList.toggle('btn-danger');
+        }
+        function sendJSONRequest(path, data, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', path, true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        if (callback) {
+                            callback(null, JSON.parse(xhr.responseText));
+                        }
+                    } else {
+                        if (callback) {
+                            callback(new Error('Request failed: ' + xhr.status));
+                        }
+                    }
+                }
+            };
+            xhr.send(JSON.stringify(data));
+        }
+    </script>
+{% endblock %}

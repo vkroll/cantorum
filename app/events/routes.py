@@ -4,7 +4,7 @@ import calendar
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from . import events
-from ..services.event_service import create_event, get_future_events, get_events , get_stimmbildungen_full , get_event_by_id
+from ..services.event_service import create_event, get_future_events, get_events , get_stimmbildungen_full , get_event_by_id, add_attendee
 from flask_login import login_required, current_user
 from ..models import Person, Singer, event_attendance, Voice
 from ..extensions import db
@@ -26,6 +26,13 @@ def detail(id):
     sub_events = event.sub_events
 
     return render_template("event_detail.html", event=event,sub_events=sub_events )
+
+@events.route('/edit_attendees/<int:id>')
+@role_required('admin', 'choir board', 'conductor')
+def edit_attendees(id):
+    event = get_event_by_id(id)
+    singers = Singer.query.all()
+    return render_template('edit_attendees.html', event=event, singers=singers)
 
 @events.route('/future_events')
 @login_required
@@ -74,7 +81,23 @@ def adduser_to_event():
         return jsonify({'success': False, 'error': str(e)}), 500
 
    
-
+@events.route('/add_attendees', methods=['POST'])
+@login_required
+@role_required('admin', 'conductor', 'choir board')
+def add_attendees():
+    if request.method == 'POST':
+        # Get the JSON data from the request
+        attendee = request.json
+        # Process the data as needed
+        event_id = attendee.get('event_id')
+        singer_id = attendee.get('singer_id')
+        # Example response
+        add_attendee(event_id, singer_id )
+        response = {'message': 'Attendee added successfully', 'event_id': event_id, 'singer_id': singer_id}
+        return jsonify(response)
+    else:
+        return jsonify({'error': 'Method not allowed'}), 405
+    
 @events.route('/calendar/<int:year>/<int:month>')
 @login_required
 def show_calendar(year, month):
