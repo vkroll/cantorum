@@ -61,9 +61,11 @@
                         console.error('Error:', error);
                     } else {
                         console.log('Response:', response);
+                        location.reload();
                     }
                 });
                 console.log('Clicked:', event.target.textContent);
+                
             }
     
             var addRemoveLinks = document.querySelectorAll('.add, .remove');
