@@ -105,6 +105,15 @@ def add_me():
     add_attendee(event_id, singer_id)
     return jsonify({'added': True})
 
+@events.route('remove_me', methods=['POST'])
+@login_required
+def remove_me():
+    attendee = request.json
+    event_id = attendee.get('event_id')
+    singer_id = current_user.person.singer.id
+    
+    r = remove_attendee(event_id, singer_id)
+    return jsonify({'success': r})
 
 @events.route('/remove_attendee', methods=['POST'])
 @login_required
