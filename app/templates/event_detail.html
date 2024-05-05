@@ -29,7 +29,9 @@
                             {% if current_user.person.singer.id not in sub_event.attendees|selectattr('person')|map(attribute='id') %}
 
                                 <li class="list-group-item">
-                                    <a href="#" class="add" id="add-{{ sub_event.id}}">Add me</a>
+                                    <a href="#" class="add" 
+                                        id="add-{{ sub_event.id}}" 
+                                        data-event-id="{{ sub_event.id}}">Add me</a>
                                 </li>
                             {% endif %}   
                         </ul>
@@ -40,6 +42,7 @@
             </p>
         </div>
     </div>
+    <script src="{{ url_for('static', filename='js/jsonrequest.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var addLinks = document.querySelectorAll('.add');
@@ -48,7 +51,20 @@
             addLinks.forEach(function(link) {
                 link.addEventListener('click', function(event) {
                     event.preventDefault();
-                    console.log('Clicked add:', link.id);
+                    var eventId = this.dataset.eventId; 
+                    var path = path = '/events/add_me';
+                    var attendee = {
+                        event_id: eventId,
+                        singer_id: {{ current_user.person.singer.id }}
+                    };
+                    console.log('Clicked add:', attendee);
+                    sendJSONRequest(path, attendee, function(error, response) {
+                        if (error) {
+                            console.error('Error:', error);
+                        } else {
+                            console.log('Response:', response);
+                        }
+                    });
                 });
             });
             removeLinks.forEach(function(link){

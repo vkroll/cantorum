@@ -93,7 +93,18 @@ def add_attendee_():
     add_attendee(event_id, singer_id )
     response = {'message': 'Attendee added successfully', 'event_id': event_id, 'singer_id': singer_id}
     return jsonify(response)
-    
+
+
+@events.route('/add_me', methods=['POST'])
+@login_required
+def add_me():
+    attendee = request.json
+    event_id = attendee.get('event_id')
+    singer_id = current_user.person.singer.id
+
+    add_attendee(event_id, singer_id)
+    return jsonify({'added': True})
+
 
 @events.route('/remove_attendee', methods=['POST'])
 @login_required
