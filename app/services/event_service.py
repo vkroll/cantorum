@@ -3,7 +3,7 @@ from ..extensions import db
 from ..models import Event, Singer, Person, event_attendance
 from datetime import date, datetime
 import calendar
-from sqlalchemy import func
+from sqlalchemy import func, asc
 from sqlalchemy.orm import aliased
 from sqlalchemy.orm import joinedload
 from collections import defaultdict
@@ -33,7 +33,7 @@ def get_future_events():
     today = date.today()
     future_events = Event.query.filter(
         (Event.start_date >= today) 
-    ).all()
+    ).order_by(asc(Event.start_date)).all()
     return future_events
 
 def get_stimmbildungen():
