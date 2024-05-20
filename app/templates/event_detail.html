@@ -32,7 +32,7 @@
                             {% endfor %}
                             {% if current_user.person.singer.id not in sub_event.attendees|selectattr('person')|map(attribute='id') %}
 
-                                <li class="list-group-item">
+                                <li class="list-group-item small">
                                     <a href="#" class="add" 
                                         id="add-{{ sub_event.id}}" 
                                         data-event-id="{{ sub_event.id}}">mich hinzufügen</a>
