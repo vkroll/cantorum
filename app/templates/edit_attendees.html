@@ -8,12 +8,14 @@
             <h2 class="card-subtitle">{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M')}}
             {{ event.room.location.name }} {{ event.room.name }}</h2>
             <p class="card-text">
+                <input type="text" id="searchInput" placeholder="Search members..." class="form-control mb-3">
+
             <ul class="list-group">
                     <li class="list-group-item">{{ event.title }} 
                         - {{ event.start_time.strftime('%H:%M') }} 
                         - {{ event.end_time.strftime('%H:%M')}}
                     </li>
-                    <ul>
+                    <ul id="singerList">
                         {% for s in singers %}
                             <li class="list-group-item">
                                 <button class="btn {% if s in event.attendees %}btn-danger{% else %}btn-primary{% endif %} add-singer" data-singer-id="{{ s.id }}">
@@ -34,6 +36,23 @@
     <script>
         
         document.addEventListener('DOMContentLoaded', function() {
+        // Filter function for the search input
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var query = this.value.toLowerCase();
+            var singers = document.querySelectorAll('#singerList .list-group-item');
+            
+            singers.forEach(function(singer) {
+                var text = singer.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    singer.style.display = '';
+                } else {
+                    singer.style.display = 'none';
+                }
+            });
+        });
+
+
+
         // Add event listener to all buttons with the class 'myButton'
         var buttons = document.querySelectorAll('.add-singer');
             buttons.forEach(function(button) {
