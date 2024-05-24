@@ -4,10 +4,19 @@
 {% block content %}
     <div class="card" style="width: 100%;">
         <div class="card-body">
-            <h1 class="card-title">{{ event.title }} {{event.start_date.strftime('%d.%m.%Y')}} </h1>
+            <h1 class="card-title"><span class="editable" data-field="title">{{ event.title }}</span>{{ event.title }} {{event.start_date.strftime('%d.%m.%Y')}} </h1>
             <h2 class="card-subtitle">{{ event.start_time.strftime('%H:%M') }} - {{ event.end_time.strftime('%H:%M')}}
             {{ event.room.location.name }} {{ event.room.name }}</h2>
             <p class="card-text">
+                <h4>Teilnehmende per Stimme</h4>
+                <table width="80%">
+                    <tr>
+                    {% for voice in ["S1", "S2", "A1", "A2", "T1", "T2", "B1", "B2"] %}
+                        <td> {{ voice }}: {{ voice_counts[voice] }} </td>
+                    {% endfor %}
+
+                    </tr>
+                </table>
             <ul class="list-group">
                 {% for sub_event in sub_events %}
                     <li class="list-group-item">{{ sub_event.title }} 
@@ -73,6 +82,43 @@
                 link.addEventListener('click', function(event) {
                     var path = '/events/' + (link.classList.contains('add') ? 'add_me' : 'remove_me');
                     handleAttendeeAction(event, path);
+                });
+            });
+
+            function makeEditable(element) {
+                var oldValue = element.textContent;
+                var field = element.dataset.field;
+                var input = document.createElement('input');
+                input.type = 'text';
+                input.value = oldValue;
+                input.className = 'form-control';
+                input.addEventListener('blur', function() {
+                    var newValue = input.value;
+                    element.textContent = newValue;
+
+                    // Send the new value to the server
+                    var data = {};
+                    data[field] = newValue;
+                    data['event_id'] = {{ event.id }};
+
+                    sendJSONRequest('/events/update_event', data, function(error, response) {
+                        if (error) {
+                            console.error('Error:', error);
+                        } else {
+                            console.log('Response:', response);
+                        }
+                    });
+                });
+
+                element.textContent = '';
+                element.appendChild(input);
+                input.focus();
+            }
+                // Attach event listeners to editable fields
+            var editables = document.querySelectorAll('.editable');
+            editables.forEach(function(editable) {
+                editable.addEventListener('click', function() {
+                    makeEditable(editable);
                 });
             });
         });

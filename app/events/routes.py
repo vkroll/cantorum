@@ -4,7 +4,7 @@ import calendar
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from . import events
-from ..services.event_service import create_event, get_future_events, get_events , get_stimmbildungen_full , get_event_by_id, add_attendee, remove_attendee
+from ..services.event_service import create_event, get_future_events, get_events , get_stimmbildungen_full , get_event_by_id, add_attendee, remove_attendee, get_voice_counts
 from flask_login import login_required, current_user
 from ..models import Person, Singer, event_attendance, Voice
 from ..extensions import db
@@ -24,8 +24,16 @@ def create_event_route():
 def detail(id):
     event = get_event_by_id(id)
     sub_events = event.sub_events
+    voice_counts = get_voice_counts(id)
+    # Convert to a dictionary for easy access in the template
+    voice_counts_dict = {voice: count for voice, count in voice_counts}
+    # Ensure all voices are present in the dictionary
+    for voice in ["S1", "S2", "A1", "A2", "T1", "T2", "B1", "B2"]:
+        if voice not in voice_counts_dict:
+            voice_counts_dict[voice] = 0
 
-    return render_template("event_detail.html", event=event,sub_events=sub_events )
+
+    return render_template("event_detail.html", event=event,sub_events=sub_events,voice_counts=voice_counts_dict)
 
 @events.route('/edit_attendees/<int:id>')
 @role_required('admin', 'choir board', 'conductor')

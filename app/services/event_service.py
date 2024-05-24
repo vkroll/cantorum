@@ -1,6 +1,6 @@
 # app/services/event_service.py
 from ..extensions import db
-from ..models import Event, Singer, Person, event_attendance
+from ..models import Event, Singer, Person, event_attendance, Voice
 from datetime import date, datetime
 import calendar
 from sqlalchemy import func, asc
@@ -92,6 +92,17 @@ def get_events(year, month):
         events_by_day[event.start_date.day].append(event)
 
     return events_by_day
+
+def get_voice_counts(event_id):
+
+    voice_counts = db.session.query(
+        Voice.name, func.count(Singer.id)
+    ).outerjoin(Singer, Voice.id == Singer.voice_id) \
+     .outerjoin(event_attendance, (event_attendance.c.singer_id == Singer.id) & (event_attendance.c.event_id == event_id)) \
+     .filter((event_attendance.c.attending != 'no') | (event_attendance.c.attending == None)) \
+     .group_by(Voice.name) \
+     .all()
+    return voice_counts
 
 def add_attendee(event_id, singer_id):
     new_attendance = event_attendance.insert().values(
