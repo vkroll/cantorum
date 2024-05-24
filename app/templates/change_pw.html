@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Change Password</h1>
+<form id="changePasswordForm">
+    <label for="oldPassword">Old Password:</label>
+    <input type="password" id="oldPassword" name="old_password" required><br>
+
+    <label for="newPassword">New Password:</label>
+    <input type="password" id="newPassword" name="new_password" required><br>
+
+    <button type="submit">Change Password</button>
+</form>
+
+<script>
+    document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var oldPassword = document.getElementById('oldPassword').value;
+        var newPassword = document.getElementById('newPassword').value;
+
+        var data = {
+            old_password: oldPassword,
+            new_password: newPassword
+        };
+
+        fetch('/user/change_password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Password changed successfully');
+            } else {
+                alert('Error: ' + data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+{% endblock %}
