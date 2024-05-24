@@ -1,17 +1,46 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<h1>Change Password</h1>
-<form id="changePasswordForm">
-    <label for="oldPassword">Old Password:</label>
-    <input type="password" id="oldPassword" name="old_password" required><br>
-
-    <label for="newPassword">New Password:</label>
-    <input type="password" id="newPassword" name="new_password" required><br>
-
-    <button type="submit">Change Password</button>
-</form>
+<section class="gradient-form">
+    <div class="container py-5">
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-xl-10">
+          <div class="card rounded-3 text-black">
+            <div class="row g-0">
+              <div class="col-lg-6">
+                <div class="card-body p-md-5 mx-md-4">
+                    <h1>Change Password</h1>
+  
+                   <form id="changePasswordForm">
+ 
+                   
+                    <div class="form-outline mb-4">
+                        <label for="oldPassword">Old Password:</label>
+                        <input type="password" id="oldPassword" name="old_password" required><br>
+                    </div>
+  
+                    <div class="form-outline mb-4">
+                        <label for="newPassword">Old Password:</label>
+                        <input type="password" id="newPassword" name="new_password" required><br>
+                    </div>
+  
+                    <div class="text-center pt-1 mb-5 pb-1">
+                        <button type="submit">Change Password</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                    <img src="{{ url_for('static', filename='images/login.jpg') }} ">
+                </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
 
 <script>
     document.getElementById('changePasswordForm').addEventListener('submit', function(event) {
